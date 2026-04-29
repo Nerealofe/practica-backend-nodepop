@@ -1,0 +1,53 @@
+<h1>Productos</h1>
+
+<form method="GET" action="/products">
+    
+    <input type="text" name="name" placeholder="Buscar por nombre" value="<%= name || "" %>">
+    <input type="number" name="min" placeholder="Precio mínimo" value="<%= min || "" %>">
+    <input type="number" name="max" placeholder="Precio máximo" value="<%= max || "" %>">
+
+
+    <select name="tag">
+        <option value="">Todos los tags</option>
+        <option value="work" <%= tag === "work" ? "selected" : "" %>>work</option>
+        <option value="lifestyle" <%= tag === "lifestyle" ? "selected" : "" %>>lifestyle</option>
+        <option value="motor" <%= tag === "motor" ? "selected" : "" %>>motor</option>
+        <option value="mobile" <%= tag === "mobile" ? "selected" : "" %>>mobile</option>
+    </select>
+    <button type="submit">Buscar</button>
+</form>
+
+<!-- recorremos cada producto del array -->
+<% for (let product of products) { %>
+
+<!-- mostramos nombre y precio del producto -->
+  <p>Producto: <%= product.name %></p>
+  <p>Precio: <%= product.price %></p>
+
+  <p>Tags:</p>
+
+<!-- recorremos tag del producto -->
+  <% for (let tag of product.tags) { %>
+<!-- mostramos tag     -->
+<span><%= tag %></span>
+<% } %>
+
+<hr>
+
+<% } %>
+
+<div>
+    <% const currentSkip = Number(skip) || 0; %>
+    <% const currentLimit = Number(limit) || 1; %>
+
+    <%if (currentSkip > 0) { %>
+<a href="/products?skip=<%= Math.max(currentSkip - currentLimit, 0) %>&limit=<%= currentLimit %>&name=<%= name || '' %>&tag=<%= tag || '' %>&min=<%= min || '' %>&max=<%= max || '' %>">
+  Anterior
+</a>
+
+<% } %>
+
+<a href="/products?skip=<%= currentSkip + currentLimit %>&limit=<%= currentLimit %>&name=<%= name || '' %>&tag=<%= tag || '' %>&min=<%= min || '' %>&max=<%= max || '' %>">
+  Siguiente
+</a>
+</div>
