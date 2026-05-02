@@ -1,21 +1,20 @@
 import "dotenv/config";
 import dns from "dns";
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
-
+// crea errores http (404,500...)
 import createError from "http-errors";
 import express from "express";
+// modulo para trabajar con rutas de archivos
 import path from "path";
+// para leer coockies del navegador
 import cookieParser from "cookie-parser";
+// middleware para ver logs en consola (peticiones)
 import logger from "morgan";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
-
-import { connectToDB } from "./lib/connectMongoose.js";
-
-await connectToDB();
 
 const app = express();
 

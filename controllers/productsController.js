@@ -73,3 +73,10 @@ export async function createProduct(req, res) {
   // redirigimos a lista de productos
   res.redirect("/products");
 }
+
+// borrar un producto por su id
+export async function deleteProduct(req, res) {
+  const id = req.params.id;
+  await Product.findByIdAndDelete(id);
+  res.redirect("/products");
+}

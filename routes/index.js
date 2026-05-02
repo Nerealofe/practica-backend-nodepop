@@ -11,5 +11,6 @@ router.get("/", function (req, res) {
 router.get("/products", productsController.listProducts);
 router.get("/products/new", productsController.newProductPage);
 router.post("/products", productsController.createProduct);
+router.post("/products/:id/delete", productsController.deleteProduct);
 
 export default router;

@@ -32,6 +32,11 @@
 <span><%= tag %></span>
 <% } %>
 
+
+<form method="POST" action="/products/<%= product._id %>/delete">
+  <button type="submit">Borrar articulo</button>
+</form>
+
 <hr>
 
 <% } %>
@@ -50,4 +55,5 @@
 <a href="/products?skip=<%= currentSkip + currentLimit %>&limit=<%= currentLimit %>&name=<%= name || '' %>&tag=<%= tag || '' %>&min=<%= min || '' %>&max=<%= max || '' %>">
   Siguiente
 </a>
+
 </div>
