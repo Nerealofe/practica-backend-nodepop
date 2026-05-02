@@ -1,0 +1,12 @@
+<form method="POST" action="/products">
+    <input type="text" name="name" placeholder="Nombre producto" value="<%= values.name || "" %>">
+    <input type="number" name="price" placeholder="Precio venta" value="<%= values.price || "" %>">
+    <select name="tags">
+        <option value="work">work</option>
+        <option value="lifestyle">lifestyle</option>
+        <option value="motor">motor</option>
+        <option value="mobile">mobile</option>
+    </select>
+    <button type="submit">Añadir producto</button>
+
+</form>

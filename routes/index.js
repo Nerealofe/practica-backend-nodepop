@@ -1,12 +1,15 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const productsController = require("../controllers/productsController");
+import * as productsController from "../controllers/productsController.js";
 
 router.get("/", function (req, res) {
   res.render("index", { title: "Express" });
 });
 
+// ver producto / ver formulario / crear producto
 router.get("/products", productsController.listProducts);
+router.get("/products/new", productsController.newProductPage);
+router.post("/products", productsController.createProduct);
 
-module.exports = router;
+export default router;

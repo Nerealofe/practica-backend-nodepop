@@ -1,13 +1,26 @@
-const createError = require("http-errors");
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
+import "dotenv/config";
+import dns from "dns";
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+import createError from "http-errors";
+import express from "express";
+import path from "path";
+import cookieParser from "cookie-parser";
+import logger from "morgan";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+import indexRouter from "./routes/index.js";
+import usersRouter from "./routes/users.js";
+
+import { connectToDB } from "./lib/connectMongoose.js";
+
+await connectToDB();
 
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -38,4 +51,4 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-module.exports = app;
+export default app;

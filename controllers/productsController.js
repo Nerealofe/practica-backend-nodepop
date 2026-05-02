@@ -1,4 +1,7 @@
-function listProducts(req, res) {
+import Product from "../models/product.js";
+
+export async function listProducts(req, res) {
+  // leemos los parametros que vienen en la URL
   const name = req.query.name;
   const tag = req.query.tag;
   const min = req.query.min;
@@ -6,32 +9,31 @@ function listProducts(req, res) {
   const skip = req.query.skip;
   const limit = req.query.limit;
 
-  const products = [
-    { name: "iPhone", price: 500, tags: ["mobile"] },
-    { name: "Bici", price: 200, tags: ["lifestyle"] },
-    { name: "Coche", price: 3000, tags: ["motor"] },
-    { name: "Mesa", price: 80, tags: ["work"] },
-  ];
+  // creamos objeto vacio para el filtro
+  const filter = {};
 
-  let filteredProducts = products.filter((product) => {
-    const matchesName = name ? product.name.startsWith(name) : true;
+  if (name) {
+    filter.name = new RegExp("^" + name, "i");
+  }
 
-    const matchesTag = tag ? product.tags.includes(tag) : true;
+  if (tag) {
+    filter.tags = tag;
+  }
 
-    const matchesPrice =
-      (min ? product.price >= Number(min) : true) &&
-      (max ? product.price <= Number(max) : true);
+  if (min || max) {
+    filter.price = {
+      $gte: min ? Number(min) : 0,
+      $lte: max ? Number(max) : Infinity,
+    };
+  }
+  // hacemos la consulta a MongoDB con el filtro y aplicamos paginacion
+  const products = await Product.find(filter)
+    .skip(Number(skip) || 0)
+    .limit(Number(limit) || 0);
 
-    return matchesName && matchesTag && matchesPrice;
-  });
-
-  const skipNum = Number(skip) || 0;
-  const limitNum = Number(limit) || filteredProducts.length;
-
-  filteredProducts = filteredProducts.slice(skipNum).slice(0, limitNum);
-
+  // enviamos los datos a la vista
   res.render("products", {
-    products: filteredProducts,
+    products,
     name,
     tag,
     min,
@@ -41,6 +43,33 @@ function listProducts(req, res) {
   });
 }
 
-module.exports = {
-  listProducts,
-};
+// muestra formulario para crear producto
+export function newProductPage(req, res) {
+  res.render("product-form", {
+    title: "Crear producto",
+    values: req.body,
+    errorMessage: "null",
+  });
+}
+
+// recibe datos formulario y crea el producto en MongoDB
+
+export async function createProduct(req, res) {
+  const { name, price, tags } = req.body;
+  //sacamos los datos y validamos
+  if (!name || !price) {
+    return res.render("product-form", {
+      title: "Crear producto",
+      values: req.body,
+      errorMessage: "Nombre y precio obligatorios",
+    });
+  }
+  // creamos en la base de datos el producto
+  await Product.create({
+    name,
+    price: Number(price),
+    tags: Array.isArray(tags) ? tags : [tags],
+  });
+  // redirigimos a lista de productos
+  res.redirect("/products");
+}
