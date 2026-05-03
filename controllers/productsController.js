@@ -1,6 +1,11 @@
 import Product from "../models/product.js";
 
 export async function listProducts(req, res) {
+  // compruebo si esta logueado
+  if (!req.session.userId) {
+    return res.redirect("/login");
+  }
+
   // leemos los parametros que vienen en la URL
   const name = req.query.name;
   const tag = req.query.tag;
@@ -11,6 +16,10 @@ export async function listProducts(req, res) {
 
   // creamos objeto vacio para el filtro
   const filter = {};
+
+  // solo productos del usuario
+  const userId = req.session.userId;
+  filter.owner = userId;
 
   if (name) {
     filter.name = new RegExp("^" + name, "i");
@@ -28,6 +37,7 @@ export async function listProducts(req, res) {
   }
   // hacemos la consulta a MongoDB con el filtro y aplicamos paginacion
   const products = await Product.find(filter)
+    .populate("owner")
     .skip(Number(skip) || 0)
     .limit(Number(limit) || 0);
 
@@ -53,8 +63,11 @@ export function newProductPage(req, res) {
 }
 
 // recibe datos formulario y crea el producto en MongoDB
-
 export async function createProduct(req, res) {
+  // compruebo si esta logueado
+  if (!req.session.userId) {
+    return res.redirect("/login");
+  }
   const { name, price, tags } = req.body;
   //sacamos los datos y validamos
   if (!name || !price) {
@@ -69,6 +82,7 @@ export async function createProduct(req, res) {
     name,
     price: Number(price),
     tags: Array.isArray(tags) ? tags : [tags],
+    owner: req.session.userId,
   });
   // redirigimos a lista de productos
   res.redirect("/products");
@@ -77,6 +91,54 @@ export async function createProduct(req, res) {
 // borrar un producto por su id
 export async function deleteProduct(req, res) {
   const id = req.params.id;
+  //buscar producto
+  const product = await product.findById(id);
+  //si no existe
+  if (!product) {
+    return res.redirect("/products");
+  }
+  //compruebo dueño
+  if (product.owner.toString() !== req.session.userId.toString()) {
+    return res.status(403).send("No puedes borrar este producto");
+  }
+  // borro producto
   await Product.findByIdAndDelete(id);
+  res.redirect("/products");
+}
+
+// editar el producto
+export async function editProductPage(req, res) {
+  const id = req.params.id;
+  const product = await Product.findById(id);
+  if (!product) {
+    return res.redirect("/products");
+  }
+  if (product.owner.toString() !== req.session.userId.toString()) {
+    return res.status(403).send("No puedes editar este producto");
+  }
+  res.render("product-form", {
+    title: "Editar producto",
+    values: product,
+    errorMessage: null,
+  });
+}
+
+// guarda los cambios del producto
+export async function updateProduct(req, res) {
+  const id = req.params.id;
+  const { name, price, tags } = req.body;
+  const product = await Product.findById(id);
+  if (!product) {
+    return res.redirect("/products");
+  }
+  if (product.owner.toString() !== req.session.userId.toString()) {
+    return res.status(403).send("No puedes editar este producto");
+  }
+  await Product.findByIdAndUpdate(id, {
+    name,
+    price: Number(price),
+    tags: Array.isArray(tags) ? tags : [tags],
+  });
+
   res.redirect("/products");
 }

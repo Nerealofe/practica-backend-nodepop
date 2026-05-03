@@ -1,10 +1,27 @@
+<div>
+  <span>Usuario logueado</span>
+<a href="/logout">Cerrar sesión</a>
+</div>
+
 <h1>Productos</h1>
 
 <form method="GET" action="/products">
     
-    <input type="text" name="name" placeholder="Buscar por nombre" value="<%= name || "" %>">
-    <input type="number" name="min" placeholder="Precio mínimo" value="<%= min || "" %>">
-    <input type="number" name="max" placeholder="Precio máximo" value="<%= max || "" %>">
+    <input 
+    type="text" 
+    name="name" 
+    placeholder="Buscar por nombre" 
+    value="<%= name || "" %>">
+    <input 
+    type="number" 
+    name="min" 
+    placeholder="Precio mínimo" 
+    value="<%= min || "" %>">
+    <input 
+    type="number" 
+    name="max" 
+    placeholder="Precio máximo" 
+    value="<%= max || "" %>">
 
 
     <select name="tag">
@@ -32,11 +49,12 @@
 <span><%= tag %></span>
 <% } %>
 
+<p> Propietario: <%= product.owner.name %></p>
 
 <form method="POST" action="/products/<%= product._id %>/delete">
   <button type="submit">Borrar articulo</button>
 </form>
-
+<a href="/products/<%= product._id %>/edit">Editar producto</a>
 <hr>
 
 <% } %>

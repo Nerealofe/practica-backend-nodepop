@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { type } from "os";
+import User from "./user.js";
 
 const productSchema = new mongoose.Schema(
   {
@@ -14,6 +16,11 @@ const productSchema = new mongoose.Schema(
     tags: {
       type: [String],
       enum: ["work", "lifestyle", "motor", "mobile"],
+    },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: User,
+      required: true,
     },
   },
   { timestamps: true },
