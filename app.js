@@ -13,6 +13,7 @@ import logger from "morgan";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import session from "express-session";
+import { sessionInViews } from "./middleware/viewMiddleware.js";
 
 import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
@@ -21,6 +22,15 @@ const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+app.use(
+  session({
+    secret: "nodepop-secret",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+app.use(sessionInViews);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -31,13 +41,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(
-  session({
-    secret: "nodepop-secret",
-    resave: false,
-    saveUninitialized: false,
-  }),
-);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

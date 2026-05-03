@@ -2,6 +2,7 @@ import Product from "../models/product.js";
 
 export async function listProducts(req, res) {
   // compruebo si esta logueado
+  console.log("user id products", req.session.userId);
   if (!req.session.userId) {
     return res.redirect("/login");
   }
@@ -13,6 +14,7 @@ export async function listProducts(req, res) {
   const max = req.query.max;
   const skip = req.query.skip;
   const limit = req.query.limit;
+  const sort = req.query.sort;
 
   // creamos objeto vacio para el filtro
   const filter = {};
@@ -36,8 +38,13 @@ export async function listProducts(req, res) {
     };
   }
   // hacemos la consulta a MongoDB con el filtro y aplicamos paginacion
-  const products = await Product.find(filter)
-    .populate("owner")
+  const query = Product.find(filter).populate("owner");
+
+  if (sort) {
+    query.sort(sort);
+  }
+
+  const products = await query
     .skip(Number(skip) || 0)
     .limit(Number(limit) || 0);
 
@@ -50,6 +57,7 @@ export async function listProducts(req, res) {
     max,
     skip,
     limit,
+    sort,
   });
 }
 
@@ -92,7 +100,7 @@ export async function createProduct(req, res) {
 export async function deleteProduct(req, res) {
   const id = req.params.id;
   //buscar producto
-  const product = await product.findById(id);
+  const product = await Product.findById(id);
   //si no existe
   if (!product) {
     return res.redirect("/products");

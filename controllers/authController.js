@@ -21,6 +21,7 @@ export async function loginAction(req, res) {
   }
   // si todo ok guardamos id usuario para saber quien esta logueado
   req.session.userId = user._id;
+  console.log("login action", req.session.userId);
   res.redirect("/products");
 }
 
