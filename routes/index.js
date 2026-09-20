@@ -6,7 +6,7 @@ import * as authController from "../controllers/authController.js";
 import { requireLogin } from "../middleware/authMiddleware.js";
 
 router.get("/", function (req, res) {
-  res.render("index", { title: "Express" });
+  res.render("index", { title: "Nodepop" });
 });
 
 // formulario crear producto / formulario editar / guardar edicion / borrar producto / lista productos / recibe formulario y crea producto
