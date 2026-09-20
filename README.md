@@ -80,6 +80,16 @@ Usuarios disponibles tras seed:
 
 ---
 
+## Despliegue
+
+La aplicación está desplegada en AWS y disponible en:
+
+https://nodepopkc20.duckdns.org
+
+Para el segundo ejercicio, la aplicación React está disponible mediante la IP pública del servidor:
+
+http://54.83.243.187
+
 
 
 
