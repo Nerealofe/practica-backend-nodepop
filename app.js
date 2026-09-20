@@ -25,7 +25,7 @@ const __dirname = dirname(__filename);
 
 app.use(
   session({
-    secret: "nodepop-secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
   }),
