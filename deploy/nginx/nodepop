@@ -1,0 +1,35 @@
+server {
+
+    server_name nodepopkc20.duckdns.org;
+
+    location ~ ^/stylesheets/ {
+        root /var/www/apps/practica-backend-nodepop/public;
+        access_log off;
+        expires max;
+        add_header X-Owner Nerealofe always;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_redirect off;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/nodepopkc20.duckdns.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/nodepopkc20.duckdns.org/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = nodepopkc20.duckdns.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+
+    server_name nodepopkc20.duckdns.org;
+    return 404; # managed by Certbot
