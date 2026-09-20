@@ -90,6 +90,10 @@ Para el segundo ejercicio, la aplicación React está disponible mediante la IP 
 
 http://54.83.243.187
 
+https://github.com/Nerealofe/practica-fundamentos-react
+
+usuario disponible prueba: maria@gmail.com / 123456
+
 
 
 
