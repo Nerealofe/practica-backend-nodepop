@@ -94,6 +94,8 @@ https://github.com/Nerealofe/practica-fundamentos-react
 
 usuario disponible prueba: maria@gmail.com / 123456
 
+En la carpeta deploy de este repositorio estan los ficheros de configuracion.
+
 
 
 
